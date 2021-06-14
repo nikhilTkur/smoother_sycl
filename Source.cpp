@@ -25,7 +25,6 @@ struct csr_matrix_elements
 
 csr_matrix_elements create_sparse_matrix_handle(py::array_t<int>& row, py::array_t<int>& col, py::array_t<double>& vals, int& size) {
 
-	//copy the py vectors to std::vectors
 	std::vector<int> row_vec(row.data(), row.data() + row.size());
 	std::vector<int> col_vec(col.data() , col.data() + col.size());
 	std::vector<double> vals_vec(vals.data(), vals.data() +  vals.size());
