@@ -22,15 +22,15 @@ struct csr_matrix_elements
 	int size;
 };
 
+
 csr_matrix_elements create_sparse_matrix_handle(py::array_t<int>& row, py::array_t<int>& col, py::array_t<double>& vals, int& size) {
 
-	//copy the py vectors to std::vectors
-	std::vector<int> row_vec(row.size());
-	std::vector<int> col_vec(col.size());
-	std::vector<double> vals_vec(vals.size());
-	std::memcpy(row_vec.data(), row.data(), row.size() * sizeof(int));
-	std::memcpy(col_vec.data(), col.data(), col.size() * sizeof(int));
-	std::memcpy(vals_vec.data(), vals.data(), vals.size() * sizeof(double));
+	std::vector<int> row_vec(row.data(), row.data() + row.size());
+	std::vector<int> col_vec(col.data() , col.data() + col.size());
+	std::vector<double> vals_vec(vals.data(), vals.data() +  vals.size());
+	//std::memcpy(row_vec.data(), row.data(), row.size() * sizeof(int));
+	//std::memcpy(col_vec.data(), col.data(), col.size() * sizeof(int));
+	//std::memcpy(vals_vec.data(), vals.data(), vals.size() * sizeof(double));
 
 	// Create a matrix entity 
 	csr_matrix_elements matrix;
@@ -46,8 +46,7 @@ csr_matrix_elements create_sparse_matrix_handle(py::array_t<int>& row, py::array
 
 py::array_t<double> jacobirelaxation(csr_matrix_elements &D_inv , csr_matrix_elements &R_omega , py::array_t<double>& b) {
 
-	std::vector<double> b_vec(b.size());
-	std::memcpy(b_vec.data(), b.data(), b.size() * sizeof(double));
+	std::vector<double> b_vec(b.data(), b.data() + b.size());
 	cl::sycl::queue q;
 	const float omega = 4.0 / 5.0;
 	std::vector<double> ans(D_inv.size, 0.0);
@@ -74,7 +73,7 @@ py::array_t<double> jacobirelaxation(csr_matrix_elements &D_inv , csr_matrix_ele
 	return result;
 }
 
-PYBIND11_MODULE(smoother_sycl, m) {
+PYBIND11_MODULE(cpp, m) {
 	py::class_<csr_matrix_elements>(m, "csr_martix_elements")
 		.def(py::init<>());
 	m.def("smoother_jacobi", &jacobirelaxation);
