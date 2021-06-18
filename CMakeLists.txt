@@ -24,7 +24,7 @@ set(CMAKE_CXX_FLAGS "-Ofast -fsycl -DMKL_ILP64 -tbb ${CMAKE_CXX_FLAGS} -Wall")
 pybind11_add_module(cpp SHARED smoother_sycl/source.cpp)
 
 
-target_link_libraries(cpp PUBLIC pybind11::module m mkl_intel_lp64 mkl_core mkl_tbb_thread mkl_intel_thread)
+target_link_libraries(cpp PUBLIC pybind11::module m mkl_intel_lp64 mkl_core mkl_tbb_thread mkl_intel_thread iomp5 pthread)
    
 # Add to CMake search path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
